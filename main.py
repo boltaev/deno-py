@@ -1,18 +1,20 @@
 import requests
+import time
 from bs4 import BeautifulSoup
 from xlwt import Workbook
 
+start = time.time()
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 YaBrowser/17.6.1.749 Yowser/2.5 Safari/537.36'
 }
-filename = 'HOCO_Headphones.xls'
+filename = 'HOCO_Powerbanks2.xls'
 
 
 # loop for range every page of site between operands
 def count_items(first, last):
     product_links = []
     for x in range(first, last):
-        r = requests.get(f'https://hocotech.com/ru/category/звук/наушники/page/{x}/')
+        r = requests.get(f'https://hocotech.com/ru/category/зарядка/портативные-зарядки/портативные-аккумуляторы/page/{x}/')
         soup = BeautifulSoup(r.content, 'lxml')
         product_list = soup.find_all('div', class_='desc')
         # getting href of every single product from catalog
@@ -72,6 +74,13 @@ def get_data(file_name, product_links):
         wb.save(file_name)
 
 
-products_links = count_items(1, 21)
+products_links = count_items(3, 14)
 get_data(filename, products_links)
+
+end = time.time()
+elapsed = round(end - start, 3)
+elapsedAverage = round(elapsed/len(products_links), 3)
 print('extracted data saved successfully into: ', filename)
+
+print('elapsed time: ', elapsed)
+print('average elapsed time per item: ', elapsedAverage)
